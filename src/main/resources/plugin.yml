@@ -1,0 +1,6 @@
+name: TranslationsBridge
+version: '2.0.1'
+main: me.siridev.translationBridge.TranslationsBridge
+api-version: '1.21'
+load: STARTUP
+authors: [ SirImperivm_ ]

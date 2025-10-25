@@ -1,0 +1,111 @@
+plugins {
+    id 'java'
+    id 'com.gradleup.shadow' version '8.3.1'
+    id 'xyz.jpenilla.run-paper' version '3.0.2'
+    id 'maven-publish'
+}
+
+group = 'me.siridev'
+description = 'TranslationsBridge-V2'
+
+def versionFile = file("$projectDir/version.txt")
+
+if (!versionFile.exists()) {
+    versionFile.text = "2.0.1"
+}
+
+def currentVersion = versionFile.text.trim()
+def (major, minor, patch) = currentVersion.tokenize('.').collect { it as int }
+
+def incrementPatch = {
+    patch++
+    if (patch >= 10) {
+        patch = 0
+        minor += 1
+    }
+    def newVersion = "${major}.${minor}.${patch}"
+    versionFile.text = newVersion
+    return newVersion
+}
+
+version = currentVersion
+
+tasks.register("incrementVersion") {
+    doLast {
+        def newVersion = incrementPatch()
+        println "✅ Version incremented to: ${newVersion}"
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { name = 'spigotmc-repo'; url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { name = 'jitpack.io'; url = 'https://jitpack.io' }
+}
+
+dependencies {
+    compileOnly "org.spigotmc:spigot-api:1.21.8-R0.1-SNAPSHOT"
+}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') { expand props }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 21
+    options.encoding = 'UTF-8'
+}
+
+tasks.shadowJar {
+    archiveClassifier.set('')
+    archiveFileName.set("${project.description}-${project.version}.jar")
+
+    exclude('META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA')
+}
+
+tasks.build {
+    dependsOn tasks.shadowJar
+}
+
+tasks.named('runServer') {
+    minecraftVersion '1.21.8'
+    runDirectory.set(layout.projectDirectory.dir('run'))
+    jvmArgs('-Xmx1G', '-XX:+UseG1GC')
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            groupId = project.group
+            artifactId = project.description.toLowerCase()
+            version = project.version
+
+            artifact(tasks.shadowJar) {
+                classifier = ''
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/SirImperivm/translationsbridge-v2")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+                password = project.findProperty("gpr.token") ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}

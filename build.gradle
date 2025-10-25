@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'me.siridev'
-description = 'TranslationsBridge-V2'
+description = 'TranslationsBridge'
 
 def versionFile = file("$projectDir/version.txt")
 
@@ -19,7 +19,7 @@ def (major, minor, patch) = currentVersion.tokenize('.').collect { it as int }
 
 def incrementPatch = {
     patch++
-    if (patch >= 10) {
+    if (patch >= 25) {
         patch = 0
         minor += 1
     }
@@ -69,7 +69,6 @@ tasks.withType(JavaCompile).configureEach {
 tasks.shadowJar {
     archiveClassifier.set('')
     archiveFileName.set("${project.description}-${project.version}.jar")
-
     exclude('META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA')
 }
 
@@ -85,15 +84,14 @@ tasks.named('runServer') {
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
-            from components.java
-
+        create("mavenJava", MavenPublication) {
             groupId = "me.siridev"
             artifactId = "translationsbridge-v2"
-            version = version
+            version = currentVersion
 
+            // Pubblica lo shadowJar come artefatto principale
             artifact(tasks.shadowJar) {
-                classifier = ''
+                builtBy tasks.shadowJar
             }
         }
     }

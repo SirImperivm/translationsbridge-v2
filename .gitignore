@@ -117,3 +117,4 @@ run/
 !gradle-wrapper.jar
 !/build/libs/
 !/build/libs/*
+gradle.properties

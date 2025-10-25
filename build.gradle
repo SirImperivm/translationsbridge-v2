@@ -88,9 +88,9 @@ publishing {
         mavenJava(MavenPublication) {
             from components.java
 
-            groupId = project.group
-            artifactId = project.description.toLowerCase()
-            version = project.version
+            groupId = "me.siridev"
+            artifactId = "translationsbridge-v2"
+            version = version
 
             artifact(tasks.shadowJar) {
                 classifier = ''

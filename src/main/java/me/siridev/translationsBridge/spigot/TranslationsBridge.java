@@ -4,6 +4,8 @@ import me.siridev.translationsBridge.spigot.assets.handlers.ConfigHandler;
 import me.siridev.translationsBridge.spigot.assets.utils.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import static org.bukkit.Bukkit.getPluginManager;
+
 @SuppressWarnings("all")
 public final class TranslationsBridge extends JavaPlugin {
 
@@ -34,7 +36,7 @@ public final class TranslationsBridge extends JavaPlugin {
     }
 
     public void disable() {
-        getPluginLoader().disablePlugin(this);
+        getPluginManager().disablePlugin(this);
     }
 
     public TranslationsBridge getPlugin() {

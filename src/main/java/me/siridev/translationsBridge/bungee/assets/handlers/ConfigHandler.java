@@ -1,9 +1,8 @@
-package me.siridev.translationsBridge.spigot.assets.handlers;
+package me.siridev.translationsBridge.bungee.assets.handlers;
 
-import me.siridev.translationsBridge.spigot.TranslationsBridge;
-import me.siridev.translationsBridge.spigot.assets.utils.Logger;
-import me.siridev.translationsBridge.spigot.objects.entities.files.PluginFile;
-import org.bukkit.configuration.InvalidConfigurationException;
+import me.siridev.translationsBridge.bungee.TranslationsBridge;
+import me.siridev.translationsBridge.bungee.assets.utils.Logger;
+import me.siridev.translationsBridge.bungee.objects.entities.files.PluginFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,34 +35,6 @@ public class ConfigHandler {
         validateAll();
     }
 
-    public static void save(String fileName) {
-        if (!PluginFiles.containsKey(fileName)) {
-            Logger.Fail("Tried to save non-existent file!");
-            return;
-        }
-
-        try {
-            PluginFiles.get(fileName).save();
-        } catch (IOException e) {
-            Logger.Fail("Failed to save " + fileName + " file!");
-            e.printStackTrace();
-        }
-    }
-
-    public static void load(String fileName) {
-        if (!PluginFiles.containsKey(fileName)) {
-            Logger.Fail("Tried to load non-existent file!");
-            return;
-        }
-
-        try {
-            PluginFiles.get(fileName).load();
-        } catch (IOException | InvalidConfigurationException e) {
-            Logger.Fail("Failed to load " + fileName + " file!");
-            e.printStackTrace();
-        }
-    }
-
     private void createAll() {
         for (Map.Entry<String, PluginFile> entry : PluginFiles.entrySet()) {
             String name = entry.getKey();
@@ -87,7 +58,7 @@ public class ConfigHandler {
 
             try {
                 file.save();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 Logger.Fail("Failed to save " + name + " file! Skipping.");
                 e.printStackTrace();
             }
@@ -102,9 +73,11 @@ public class ConfigHandler {
             if (reloading && !file.isReloadable()) continue;
             try {
                 file.load();
-            } catch (IOException | InvalidConfigurationException e) {
-                Logger.Fail("Failed to load " + name + " file! Skipping.");
+            } catch (IOException e) {
+                Logger.Fail("Failed to load " + name + " file! Breaking.");
                 e.printStackTrace();
+                if (!reloading) plugin.disable();
+                return;
             }
         }
     }
@@ -117,7 +90,7 @@ public class ConfigHandler {
             try {
                 file.validate();
             } catch (IOException e) {
-                Logger.Fail("Failed to update " + name + " file version! Skipping.");
+                Logger.Fail("Failed to validate " + name + " file! Skipping.");
                 e.printStackTrace();
             }
         }

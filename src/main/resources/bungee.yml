@@ -1,0 +1,6 @@
+name: TranslationsBridge
+version: ${version}
+main: me.siridev.translationsBridge.bungee.TranslationsBridge
+api-version: '1.21'
+authors: [ SirImperivm_ ]
+description: Gets the automatic translations for a plugin configuration.

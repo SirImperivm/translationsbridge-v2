@@ -1,6 +1,7 @@
 name: TranslationsBridge
-version: '2.0.1'
-main: me.siridev.translationBridge.TranslationsBridge
+version: ${version}
+main: me.siridev.translationsBridge.spigot.TranslationsBridge
 api-version: '1.21'
 load: STARTUP
 authors: [ SirImperivm_ ]
+description: Gets the automatic translations for a plugin configuration.

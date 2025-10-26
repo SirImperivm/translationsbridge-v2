@@ -1,0 +1,10 @@
+{
+    "id": "translationsbridge",
+    "name": "TranslationsBridge",
+    "version": "2.0.2",
+    "description": "Gets the automatic translations for a plugin configuration.",
+    "authors": [
+        "SirImperivm_"
+    ],
+    "main": "me.siridev.translationsBridge.velocity.TranslationsBridge"
+}

@@ -1,6 +1,6 @@
 name: TranslationsBridge
 version: ${version}
-main: me.siridev.translationsBridge.spigot.TranslationsBridge
+main: me.siridev.translationsBridge.platform.spigot.TranslationsBridge
 api-version: '1.21'
 load: STARTUP
 authors: [ SirImperivm_ ]

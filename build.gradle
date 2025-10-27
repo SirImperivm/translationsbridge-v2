@@ -64,6 +64,7 @@ dependencies {
     annotationProcessor("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
 
     implementation 'com.github.lalyos:jfiglet:0.0.9'
+    implementation 'com.github.Carleslc.Simple-YAML:Simple-Yaml:1.8.4'
 }
 
 processResources {
@@ -71,6 +72,7 @@ processResources {
     inputs.properties props
     filteringCharset 'UTF-8'
     filesMatching('plugin.yml') { expand props }
+    filesMatching('bungee.yml') { expand props }
 }
 
 ext.velocityPlugin = [
@@ -79,7 +81,7 @@ ext.velocityPlugin = [
         version : version,
         description : "Gets the automatic translations for a plugin configuration.",
         authors : [ "SirImperivm_" ],
-        main : "me.siridev.translationsBridge.velocity.TranslationsBridge"
+        main : "me.siridev.translationsBridge.platform.velocity.TranslationsBridge"
 ]
 
 tasks.register("velocityVersion") {
@@ -105,6 +107,7 @@ tasks.shadowJar {
     archiveFileName.set("${project.description}-${project.version}.jar")
 
     relocate 'com.github.lalyos', 'me.siridev.libs.com.github.lalyos'
+    relocate 'com.github.Carleslc.Simple-YAML', 'me.siridev.libs.com.github.Carleslc.Simple-YAML'
 
     exclude('META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA')
 }
